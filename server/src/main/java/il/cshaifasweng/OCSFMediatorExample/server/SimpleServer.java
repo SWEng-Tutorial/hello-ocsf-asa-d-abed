@@ -6,11 +6,13 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class SimpleServer extends AbstractServer {
 	private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
-
+	private static String IDs = "208517631, 123456789";
 	public SimpleServer(int port) {
 		super(port);
 		
@@ -32,6 +34,7 @@ public class SimpleServer extends AbstractServer {
 			//message format: "change submitters IDs: 123456789, 987654321"
 			else if(request.startsWith("change submitters IDs:")){
 				message.setData(request.substring(23));
+				IDs=request.substring(23);
 				message.setMessage("update submitters IDs");
 				sendToAllClients(message);
 			}
@@ -48,18 +51,29 @@ public class SimpleServer extends AbstractServer {
 				client.sendToClient(message);
 			}
 			else if(request.startsWith("send Submitters IDs")){
-				//add code here to send submitters IDs to client
+				message.setMessage(IDs);
+				client.sendToClient(message);
 			}
 			else if (request.startsWith("send Submitters")){
-				//add code here to send submitters names to client
+				message.setMessage("abed Elrahman abo hussien, Asa'd Mhajne");
+				client.sendToClient(message);
 			}
 			else if (request.equals("what day it is?")) {
+				LocalDate currentDate=LocalDate.now();
+				message.setMessage((currentDate.format(DateTimeFormatter.ofPattern("d/MM/y"))));
+				client.sendToClient(message);
 				//add code here to send the date to client
 			}
 			else if (request.startsWith("add")){
 				//add code here to sum 2 numbers received in the message and send result back to client
 				//(use substring method as shown above)
 				//message format: "add n+m"
+				String numbersToAdd=request.substring(4);
+				String[] splitedNumbers =numbersToAdd.split("[+]");
+				int result=Integer.parseInt(splitedNumbers[0])+Integer.parseInt(splitedNumbers[1]);
+				message.setMessage(Integer.toString(result));
+				client.sendToClient(message);
+
 			}else{
 				//add code here to send received message to all clients.
 				//The string we received in the message is the message we will send back to all clients subscribed.
@@ -67,6 +81,8 @@ public class SimpleServer extends AbstractServer {
 					// message received: "Good morning"
 					// message sent: "Good morning"
 				//see code for changing submitters IDs for help
+				message.setMessage(request);
+				sendToAllClients(message);
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
