@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SimpleServer extends AbstractServer {
 	private static ArrayList<SubscribedClient> SubscribersList = new ArrayList<>();
-	private static String IDs = "208517631, 123456789";
+	private static String IDs = "208517631, 209249747";
 	public SimpleServer(int port) {
 		super(port);
 		
@@ -31,10 +31,9 @@ public class SimpleServer extends AbstractServer {
 			//we got a request to change submitters IDs with the updated IDs at the end of the string, so we save
 			// the IDs at data field in Message entity and send back to all subscribed clients a request to update
 			//their IDs text fields. An example of use of observer design pattern.
-			//message format: "change submitters IDs: 123456789, 987654321"
+			//message format: "change submitters IDs: 123456789, 987654321"7
 			else if(request.startsWith("change submitters IDs:")){
 				message.setData(request.substring(23));
-				IDs=request.substring(23);
 				message.setMessage("update submitters IDs");
 				sendToAllClients(message);
 			}
